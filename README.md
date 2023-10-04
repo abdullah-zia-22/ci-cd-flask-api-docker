@@ -20,7 +20,8 @@ Add the following secrets:
 * SSH_PORT: The SSH port of your EC2 instance (usually 22).
 * DEPLOY_PORT: The port for allowing traffic on the requests (e.g., 7001).
 
-# NOTE: Make sure to change api running port number in CMD command in dockerfile 
+# NOTE
+* Make sure to change api running port number in CMD command in dockerfile and in workflow .yml file in docker run command
   
 # CI/CD Workflow
 The CI/CD pipeline is defined in the .github/workflows/aws.yml file. Here's an overview of what the workflow does:
