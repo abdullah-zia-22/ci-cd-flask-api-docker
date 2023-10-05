@@ -1,0 +1,73 @@
+name: CI/CD Pipeline Docker
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow on push to main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Clean up workspace
+        run: |
+          rm -rf ./*
+
+      - name: Set up SSH key and directory
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SERVER_SSH_PRIVATE_KEY }}" > ~/.ssh/private_key
+          chmod 600 ~/.ssh/private_key
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
+
+      - name: Check Github User
+        run: |
+          git --version
+          git config user.username 'abdullah-zia-22'
+          git config user.email 'sipra58@gmail.com'
+          git config user.username
+          git config user.email
+          
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |    
+            # Navigate to the directory where your app will reside
+            cd /var/www/backend/
+
+            # Pull the latest code from the current repository
+            git config --global user.username "abdullah-zia-22"
+            git config --global user.email "sipra58@gmail.com"
+
+            #dynamic repo name
+            folder_name=$(basename ${{ github.repository }})
+            echo "Folder name is: $folder_name"
+
+            #repo configuration
+            sudo rm -rf /var/www/backend/$folder_name
+            cd /var/www/backend/
+            sudo chmod 777 /var/www/backend
+            repo_url="https://github.com/${{ github.repository }}.git"
+            echo "repo url is: $repo_url"
+            git remote set-url origin $repo_url
+            git clone $repo_url
+
+            # Pull the latest code from the current repository
+            image_name="${folder_name//-/_}_api"
+            cd /var/www/backend/$folder_name
+            sudo docker stop $image_name 
+            sudo docker rm $image_name -f 
+            sudo docker rmi $image_name -f 
+            sudo docker build -t $image_name .
+            sudo docker run -d --name $image_name -p ${{ secrets.DEPLOY_PORT }}:7002 $image_name &&
+            sudo systemctl reload nginx
+
+            sudo firewall-cmd --add-port ${{ secrets.DEPLOY_PORT }}/tcp 
