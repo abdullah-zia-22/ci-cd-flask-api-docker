@@ -1,13 +1,11 @@
-import math
-from config import MySqlDatabase,REGEX,jwt,blacklist,REACT_ROUTE
-from flask import jsonify,session,render_template,Response,make_response,stream_with_context
-from flask_restful import Resource, reqparse,request,abort
+"""Modules required for user module"""
 import datetime as dt
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import jsonify
+from flask_restful import Resource, reqparse,abort
+from werkzeug.security import check_password_hash
 from flask_jwt_extended import (create_access_token,
-create_refresh_token,
-get_jwt_identity)
-from utils import jwt_required,role
+create_refresh_token)
+from config import MySqlDatabase
 
 
 # ROUTES DEFINITIONS
@@ -17,17 +15,19 @@ login_args.add_argument("email", type=str, help="Email for Login", required=True
 login_args.add_argument("password", type=str, help="Password for Login", required=True)
 
 class Login(Resource):
+    """class for Login route"""
     def post(self):
+        """login post route"""
         args = login_args.parse_args()
         #username and password checks
         email = args['email']
-        if(email[0].isdigit()):
+        if email[0].isdigit():
             message = "Email should not start with a number"
-            abort(http_status_code=406,message=message)
+            return abort(http_status_code=406,message=message)
 
-        if (" " in email):
+        if " " in email:
             message = "Email should not contain any space"
-            abort(http_status_code=406,message=message)
+            return abort(http_status_code=406,message=message)
 
         password = args['password']
 
@@ -37,20 +37,19 @@ class Login(Resource):
         admin=cursor.fetchone()
         if not admin:
             message = "Incorrect Email or Password. Try Again!"
-            abort(http_status_code=404,message=message)
-
-        
+            return abort(http_status_code=404,message=message)
 
         if check_password_hash(admin['password'], password):
             #returning access, refresh token
             expires = dt.timedelta(minutes=30)
-            access_token = create_access_token(identity=str(admin['id']),additional_claims={"role": "Admin"},expires_delta=expires)
-            refresh_token = create_refresh_token(identity=str(admin['id']),additional_claims={"role": "Admin"})
+            access_token = create_access_token(identity=str(admin['id']),
+            additional_claims={"role": "Admin"},expires_delta=expires)
+            refresh_token = create_refresh_token(identity=str(admin['id']),
+            additional_claims={"role": "Admin"})
             MySqlDatabase.close_connection(cursor,db)
-            return jsonify({"status":200,'access_token': access_token,"refresh_token":refresh_token})
+            return jsonify({"status":200,'access_token':
+            access_token,"refresh_token":refresh_token})
 
-        else:
-            message = "Incorrect Email or Password. Try Again!"
-            MySqlDatabase.close_connection(cursor,db)
-            abort(http_status_code=404,message=message)
-
+        message = "Incorrect Email or Password. Try Again!"
+        MySqlDatabase.close_connection(cursor,db)
+        return abort(http_status_code=404,message=message)
