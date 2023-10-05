@@ -1,5 +1,5 @@
 import math
-from config import MySqlDatabase,regex,jwt,blacklist,react_route
+from config import MySqlDatabase,REGEX,jwt,blacklist,REACT_ROUTE
 from flask import jsonify,session,render_template,Response,make_response,stream_with_context
 from flask_restful import Resource, reqparse,request,abort
 import datetime as dt

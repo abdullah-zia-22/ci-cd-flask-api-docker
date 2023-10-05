@@ -1,16 +1,16 @@
-from api import app
-import os
+"""Modules required for configurations"""
 from flask_cors import CORS
-from db import DatabaseConnection
 from flask_jwt_extended import JWTManager
+from api import app
+from db import DatabaseConnection
 
-host = "localhost"
-databasename = "db_name"
-user = "username"
-password = "password"
-charset='utf8mb4'
-port = 3306
-MySqlDatabase = DatabaseConnection(host, databasename, charset,user, password, port)
+HOST = "localhost"
+DATABASENAME = "db_name"
+USER = "username"
+PASSWORD = "password"
+CHARSET='utf8mb4'
+PORT = 3306
+MySqlDatabase = DatabaseConnection(HOST, DATABASENAME, CHARSET,USER, PASSWORD, PORT)
 
 app.secret_key = "super-secret"
 app.config['JSON_SORT_KEYS']=False
@@ -21,7 +21,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Make a regular expression
 # for validating an Email
-regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+REGEX = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 
 # Mail config
 app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
@@ -29,8 +29,8 @@ app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 
 #react routes for reseting password email to redirect to page
-react_route="http://localhost:3000"
-flask_route="http://127.0.0.1:5000"
+REACT_ROUTE="http://localhost:3000"
+FLASK_ROUTE="http://127.0.0.1:5000"
 
 
 
@@ -40,5 +40,3 @@ app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 jwt = JWTManager(app)
 blacklist = set()
-
-

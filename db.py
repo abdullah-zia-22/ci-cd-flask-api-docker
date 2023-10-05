@@ -1,8 +1,9 @@
+"""Modules required for db connection"""
 import mysql.connector
 
 
-# class to handle data base query and connect to the mysql
 class DatabaseConnection():
+    """class to handle data base query and connect to the mysql"""
 
     def __init__(self,host,databasename,charset,user,password,port):
         self.host = host
@@ -12,8 +13,8 @@ class DatabaseConnection():
         self.password=password
         self.port=port
 
-    # function to get a fresh cursor and database object
     def connection(self):
+        """function to get a fresh cursor and database object"""
         db = mysql.connector.connect(
             host=self.host,
             user=self.user,
@@ -30,8 +31,8 @@ class DatabaseConnection():
         cursor = db.cursor(buffered=True,dictionary=True)
         return cursor, db
 
-    # close the connection using cursor and database object created
     def close_connection(self, cursor, db):
+        """close the connection using cursor and database object created"""
         cursor.close()
         db.close()
         if not db.is_connected():

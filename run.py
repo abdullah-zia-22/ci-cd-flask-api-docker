@@ -1,3 +1,4 @@
+"""Modules required for running app"""
 from api import app
 
 # RUN API
