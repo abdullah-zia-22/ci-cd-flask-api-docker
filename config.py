@@ -1,7 +1,6 @@
 from api import app
 import os
 from flask_cors import CORS
-from flask_mail import Mail
 from db import DatabaseConnection
 from flask_jwt_extended import JWTManager
 
