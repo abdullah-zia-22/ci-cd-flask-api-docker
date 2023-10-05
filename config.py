@@ -34,11 +34,6 @@ react_route="http://localhost:3000"
 flask_route="http://127.0.0.1:5000"
 
 
-#  Following are My Personal credentials
-app.config['MAIL_USERNAME'] = 'developercodeaza@gmail.com'
-app.config['MAIL_PASSWORD'] = 'zsnsvlvninoizjzs'
-mail = Mail(app)
-
 
 # JWT Authentication
 app.config['JWT_SECRET_KEY'] = app.secret_key  # This can be changed
@@ -48,5 +43,3 @@ jwt = JWTManager(app)
 blacklist = set()
 
 
-# file management
-app.config["FILES"] = os.path.join(app.root_path, "static/uploads")
