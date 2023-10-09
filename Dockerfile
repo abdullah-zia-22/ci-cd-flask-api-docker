@@ -20,6 +20,8 @@ COPY run.py ${FUNCTION_DIR}
 COPY user.py ${FUNCTION_DIR}
 COPY utils.py ${FUNCTION_DIR}
 
-EXPOSE 80
+#Set a default value, you can override it during the Docker build
+ENV APP_PORT=80  
+EXPOSE $APP_PORT
 
-CMD ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:${{secrets.APP_PORT}}", "run:app"]
+CMD ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:$APP_PORT", "run:app"]
