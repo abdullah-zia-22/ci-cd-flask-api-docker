@@ -66,7 +66,8 @@ jobs:
             sudo docker stop $image_name 
             sudo docker rm $image_name -f 
             sudo docker rmi $image_name -f 
-            sudo docker build --build-arg APP_PORT=${{ secrets.APP_PORT }} -t $image_name .
+            APP_PORT=${{ secrets.APP_PORT }}
+            sudo docker build --build-arg APP_PORT=$APP_PORT -t $image_name .
             sudo docker run -d --name $image_name -p ${{ secrets.DEPLOY_PORT }}:$APP_PORT $image_name &&
             sudo systemctl reload nginx
 
