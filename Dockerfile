@@ -20,6 +20,6 @@ COPY run.py ${FUNCTION_DIR}
 COPY user.py ${FUNCTION_DIR}
 COPY utils.py ${FUNCTION_DIR}
 
-EXPOSE ${{secrets.APP_PORT}}
+EXPOSE 80
 
 CMD ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:${{secrets.APP_PORT}}", "run:app"]
