@@ -67,7 +67,7 @@ jobs:
             sudo docker rm $image_name -f 
             sudo docker rmi $image_name -f 
             sudo docker build -t $image_name .
-            sudo docker run -d --name $image_name -p ${{ secrets.DEPLOY_PORT }}:7002 $image_name &&
+            sudo docker run -d --name $image_name -p ${{ secrets.DEPLOY_PORT }}:${{secrets.APP_PORT}} $image_name &&
             sudo systemctl reload nginx
 
             sudo firewall-cmd --add-port ${{ secrets.DEPLOY_PORT }}/tcp 
