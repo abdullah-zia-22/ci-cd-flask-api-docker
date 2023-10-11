@@ -1,0 +1,37 @@
+name: Docker Build Check
+
+on:
+  push:
+    branches:
+      - dev  # Trigger on all branches
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check for Dockerfile
+        run: |
+          if [ -f Dockerfile ]; then
+            echo "Dockerfile found in the repository."
+          else
+            echo "Dockerfile not found in the repository."
+            exit 1
+          fi
+
+      - name: Set up Docker
+        uses: actions/setup-docker@v2
+
+      - name: Build Docker image
+        run: |
+          docker build -t myapp .
+        working-directory: ${{ github.workspace }}
+
+      - name: Check Docker build status
+        run: |
+          if docker inspect myapp >/dev/null 2>&1; then
+            echo "Docker build successful"
+          else
+            echo "Docker build failed"
+            exit 1
+          fi
