@@ -1,0 +1,48 @@
+name: Docker Build Check
+
+on:
+  push:
+    branches:
+      - dev  # Trigger on all branches
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Check Github User
+        run: |
+          git --version
+          git config user.username 'abdullah-zia-22'
+          git config user.email 'sipra58@gmail.com'
+          git config user.username
+          git config user.email
+          
+      - name: Check for Dockerfile
+        run: |
+          if [ -f Dockerfile ]; then
+            echo "Dockerfile found in the repository."
+          else
+            echo "Dockerfile not found in the repository."
+            exit 1
+          fi
+
+      - name: Set up Docker
+        uses: docker/setup-qemu-action@v1  # Official Docker setup action
+
+      - name: Build Docker image
+        run: |
+          docker build -t myapp .
+        working-directory: ${{ github.workspace }}
+
+      - name: Check Docker build status
+        run: |
+          if docker inspect myapp >/dev/null 2>&1; then
+            echo "Docker build successful."
+          else
+            echo "Docker build failed."
+            exit 1
+          fi
