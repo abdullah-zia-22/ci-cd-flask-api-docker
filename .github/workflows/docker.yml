@@ -31,7 +31,7 @@ jobs:
           fi
 
       - name: Set up Docker
-        uses: actions/setup-docker@v2
+        uses: docker/setup-qemu-action@v1  # Official Docker setup action
 
       - name: Build Docker image
         run: |
@@ -41,8 +41,8 @@ jobs:
       - name: Check Docker build status
         run: |
           if docker inspect myapp >/dev/null 2>&1; then
-            echo "Docker build successful"
+            echo "Docker build successful."
           else
-            echo "Docker build failed"
+            echo "Docker build failed."
             exit 1
           fi
