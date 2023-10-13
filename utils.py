@@ -40,7 +40,7 @@ def jwt_required(refresh):
 
 
 @jwt.token_in_blocklist_loader
-def check_if_token_in_blacklist(jwt_payload):
+def check_if_token_in_blacklist(jwt_header,jwt_payload):
     """jwt function for blacklisting the token"""
     jti = jwt_payload['jti']
     return jti in blacklist

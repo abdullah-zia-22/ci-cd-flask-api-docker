@@ -20,6 +20,7 @@ COPY run.py ${FUNCTION_DIR}
 COPY user.py ${FUNCTION_DIR}
 COPY utils.py ${FUNCTION_DIR}
 COPY test.py ${FUNCTION_DIR}
+COPY app.py ${FUNCTION_DIR}
 
 #Set a default value, you can override it during the Docker build
 EXPOSE 5000
